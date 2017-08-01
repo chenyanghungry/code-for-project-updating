@@ -52,8 +52,8 @@ void MyClass::start()
 	Point2f pts = Point2f(0,0);
 	vector<vector<string>> results;
 	procfunc(imagepath,imagepath, resultshow,pts,results);
-	QString resultshowQ = s2q(resultshow);
-	ui.resulttextEdit->setText(resultshowQ);
+	/*QString resultshowQ = s2q(resultshow);
+	ui.resulttextEdit->setText(resultshowQ);*/
 	Mat temp = imread("..\\resultshow.bmp");
 	Mat temp1;
 	cvtColor(temp, temp1, CV_BGR2RGB);
@@ -105,8 +105,8 @@ void MyClass::open()
 		Point2f pts = Point2f(0,0);
 		vector<vector<string>> results;
 		procfunc(imagepath,imagepath, resultshow,pts,results);
-		QString resultshowQ = s2q(resultshow);
-		ui.resulttextEdit->setText(resultshowQ);
+		/*QString resultshowQ = s2q(resultshow);
+		ui.resulttextEdit->setText(resultshowQ);*/
 		Mat temp = imread("..\\resultshow.bmp");
 		Mat temp1;
 		cvtColor(temp, temp1, CV_BGR2RGB);
@@ -164,7 +164,7 @@ void MyClass::shotimage()
 	else
 	{
 		IplImage *srcImg = cvLoadImage(path.c_str());//定义为指针的形式方便传入指针回调函数
-		namedWindow("img");//定义一个img窗口 
+		namedWindow("img",CV_WINDOW_NORMAL);//定义一个img窗口 
 		Point3f pt_temp = Point3f(0, 0, 0);
 		Point3f *pt = &pt_temp;
 		pair<IplImage*, Point3f*> *temp = new pair<IplImage*, Point3f*>(srcImg, pt);
@@ -172,58 +172,59 @@ void MyClass::shotimage()
 		string resultshow;
 		vector<vector<string>> results;
 		setMouseCallback("img", on_mouse, (void*)temp);
+		/*原先这里使用的是while循环，一直重复截图，直到是划了矩形，但是问题却很多，不知道为什么
+		只要在setMouseCallback之后加上waitKey（0）后程序便能够正常运行*/
+		waitKey(0);
 		
-		while (true)
+		if ((*pt).z != 0)
 		{
-			if ((*pt).z != 0)
-			{
-				pt1.x = (*pt).x;
-				pt1.y = (*pt).y;
-				procfunc("..\\shot.bmp",path, resultshow, pt1,results);
-				QString resultshowQ = s2q(resultshow);
-				ui.resulttextEdit->setText(resultshowQ);
-				Mat temp = imread("..\\resultshow.bmp",CV_LOAD_IMAGE_COLOR);
-				Mat temp1;
-				cvtColor(temp, temp1, CV_BGR2RGB);
+			pt1.x = (*pt).x;
+			pt1.y = (*pt).y;
+			procfunc("..\\shot.bmp",path, resultshow, pt1,results);
+			/*QString resultshowQ = s2q(resultshow);
+			ui.resulttextEdit->setText(resultshowQ);*/
+			Mat temp = imread("..\\resultshow.bmp",CV_LOAD_IMAGE_COLOR);
+			Mat temp1;
+			cvtColor(temp, temp1, CV_BGR2RGB);
 				
-				QImage showImageQ = QImage((const unsigned char*)(temp1.data), temp1.cols, temp1.rows, QImage::Format_RGB888);
-				this->ui.imagelabel->setPixmap(QPixmap::fromImage(showImageQ));
-				if (model->rowCount() == 0)
-				{
-					for (size_t i = 0; i < results.size(); i++)
-					{
-						model->setItem(2 * i, 0, new QStandardItem(s2q(results[i][0])));
-						model->setItem(2 * i, 1, new QStandardItem(s2q(results[i][1])));
-						model->setItem(2 * i, 2, new QStandardItem(s2q(results[i][2])));
-						model->setItem(2 * i, 3, new QStandardItem(s2q(results[i][3])));
-						model->setItem(2 * i + 1, 1, new QStandardItem(s2q(results[i][4])));
-						model->setItem(2 * i + 1, 2, new QStandardItem(s2q(results[i][5])));
-						model->setItem(2 * i + 1, 3, new QStandardItem(s2q(results[i][6])));
-					}
-				}
-				else
-				{
-					model->removeRows(0, model->rowCount());
-					for (size_t i = 0; i < results.size(); i++)
-					{
-						model->setItem(2 * i, 0, new QStandardItem(s2q(results[i][0])));
-						model->setItem(2 * i, 1, new QStandardItem(s2q(results[i][1])));
-						model->setItem(2 * i, 2, new QStandardItem(s2q(results[i][2])));
-						model->setItem(2 * i, 3, new QStandardItem(s2q(results[i][3])));
-						model->setItem(2 * i + 1, 1, new QStandardItem(s2q(results[i][4])));
-						model->setItem(2 * i + 1, 2, new QStandardItem(s2q(results[i][5])));
-						model->setItem(2 * i + 1, 3, new QStandardItem(s2q(results[i][6])));
-					}
-				}
-				break;
-			}
-			//一旦窗口直接关闭，因为不知道会返回什么，程序会一直死循环下去，下面的程序并没有什么作用
-			//但是不可或缺，缺了程序还是会一直执行，不会出现截图界面，猜测是因为有waitkey()函数所以可以显示
-			if (waitKey(10) == 27)
+			QImage showImageQ = QImage((const unsigned char*)(temp1.data), temp1.cols, temp1.rows, QImage::Format_RGB888);
+			this->ui.imagelabel->setPixmap(QPixmap::fromImage(showImageQ));
+			if (model->rowCount() == 0)
 			{
-				break;
+				for (size_t i = 0; i < results.size(); i++)
+				{
+					model->setItem(2 * i, 0, new QStandardItem(s2q(results[i][0])));
+					model->setItem(2 * i, 1, new QStandardItem(s2q(results[i][1])));
+					model->setItem(2 * i, 2, new QStandardItem(s2q(results[i][2])));
+					model->setItem(2 * i, 3, new QStandardItem(s2q(results[i][3])));
+					model->setItem(2 * i + 1, 1, new QStandardItem(s2q(results[i][4])));
+					model->setItem(2 * i + 1, 2, new QStandardItem(s2q(results[i][5])));
+					model->setItem(2 * i + 1, 3, new QStandardItem(s2q(results[i][6])));
+				}
 			}
+			else
+			{
+				model->removeRows(0, model->rowCount());
+				for (size_t i = 0; i < results.size(); i++)
+				{
+					model->setItem(2 * i, 0, new QStandardItem(s2q(results[i][0])));
+					model->setItem(2 * i, 1, new QStandardItem(s2q(results[i][1])));
+					model->setItem(2 * i, 2, new QStandardItem(s2q(results[i][2])));
+					model->setItem(2 * i, 3, new QStandardItem(s2q(results[i][3])));
+					model->setItem(2 * i + 1, 1, new QStandardItem(s2q(results[i][4])));
+					model->setItem(2 * i + 1, 2, new QStandardItem(s2q(results[i][5])));
+					model->setItem(2 * i + 1, 3, new QStandardItem(s2q(results[i][6])));
+				}
+			}
+			/*break;*/
 		}
+		//一旦窗口直接关闭，因为不知道会返回什么，程序会一直死循环下去，下面的程序并没有什么作用
+		//但是不可或缺，缺了程序还是会一直执行，不会出现截图界面，猜测是因为有waitkey()函数所以可以显示
+		/*if (waitKey(10) == 27)
+		{
+			break;
+		}*/
+		
 		delete temp;
 		cvReleaseImage(&srcImg);
 	}
@@ -291,13 +292,16 @@ void MyClass::savetext()
 	ofn.close();
 }
 
+/*********************************************************************
+**不规范说明：此处的on_mouse1加添了全部变量，没有像前面那样规范，主要是为了编程的简便
+**********************************************************************/
 Mat org;
 int n=0;
 vector<Point2f> capturePoint;
 void on_mouse1(int event, int x,int y,int flags,void *ustc)
 {
 	Point2f pt;
-	char coordinateName[16];
+	//char coordinateName[16];
 	if (event==CV_EVENT_LBUTTONDOWN)
 	{
 		pt=Point2f(x,y);

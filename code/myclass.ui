@@ -99,6 +99,9 @@ font: 12pt &quot;Agency FB&quot;;</string>
       <height>400</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(153, 153, 153);</string>
+    </property>
     <attribute name="horizontalHeaderDefaultSectionSize">
      <number>100</number>
     </attribute>
@@ -121,7 +124,7 @@ font: 12pt &quot;Agency FB&quot;;</string>
     <widget class="QPushButton" name="beginButton">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>30</x>
        <y>40</y>
        <width>90</width>
        <height>30</height>
@@ -134,7 +137,7 @@ font: 12pt &quot;Agency FB&quot;;</string>
     <widget class="QPushButton" name="shotButton">
      <property name="geometry">
       <rect>
-       <x>150</x>
+       <x>180</x>
        <y>40</y>
        <width>90</width>
        <height>30</height>
@@ -147,7 +150,7 @@ font: 12pt &quot;Agency FB&quot;;</string>
     <widget class="QPushButton" name="pointButton">
      <property name="geometry">
       <rect>
-       <x>280</x>
+       <x>340</x>
        <y>40</y>
        <width>90</width>
        <height>30</height>
@@ -158,21 +161,52 @@ font: 12pt &quot;Agency FB&quot;;</string>
      </property>
     </widget>
    </widget>
-   <widget class="QTextEdit" name="resulttextEdit">
+   <widget class="QLabel" name="operate_label">
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>560</y>
-      <width>501</width>
-      <height>331</height>
+      <y>564</y>
+      <width>101</width>
+      <height>41</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 75 12pt &quot;AcadEref&quot;;
+color: rgb(0, 0, 255);</string>
+    </property>
+    <property name="text">
+     <string>操作指南：</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="display_label">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>610</y>
+      <width>500</width>
+      <height>360</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(85, 85, 127);
+color: rgb(255, 85, 0);</string>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;功能按钮说明：&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;开始按钮处理保存的按钮&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;截取按钮处理已展示图片的一部分进行处理&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;点取按钮点取图片中的四个点进行处理&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;菜单按钮说明：&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;file能够打开指定的图片处理或者关闭窗口&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;save能够保存处理后的结果和图片&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;help操作文档手册&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::AutoText</enum>
     </property>
    </widget>
    <zorder>groupBoxbutton</zorder>
    <zorder>scrollArea</zorder>
    <zorder>result</zorder>
    <zorder>tableView</zorder>
-   <zorder>resulttextEdit</zorder>
+   <zorder>operate_label</zorder>
+   <zorder>display_label</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -180,7 +214,7 @@ font: 12pt &quot;Agency FB&quot;;</string>
      <x>0</x>
      <y>0</y>
      <width>1424</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
