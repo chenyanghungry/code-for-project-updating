@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MyClass</string>
+   <string>机械臂抓取</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QScrollArea" name="scrollArea">
@@ -219,20 +219,20 @@ color: rgb(255, 85, 0);</string>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>file</string>
+     <string>文件</string>
     </property>
     <addaction name="actionOpen"/>
     <addaction name="actionClose"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
-     <string>help</string>
+     <string>帮助</string>
     </property>
     <addaction name="actionOperate_document"/>
    </widget>
    <widget class="QMenu" name="menuSave">
     <property name="title">
-     <string>save</string>
+     <string>保存</string>
     </property>
     <addaction name="actionPicture"/>
     <addaction name="actiontext"/>
@@ -252,12 +252,12 @@ color: rgb(255, 85, 0);</string>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
    <property name="text">
-    <string>open</string>
+    <string>打开</string>
    </property>
   </action>
   <action name="actionClose">
    <property name="text">
-    <string>close</string>
+    <string>关闭</string>
    </property>
   </action>
   <action name="actionSave">
