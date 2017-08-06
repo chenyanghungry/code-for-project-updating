@@ -293,7 +293,7 @@ void MyClass::savetext()
 }
 
 /*********************************************************************
-**不规范说明：此处的on_mouse1加添了全部变量，没有像前面那样规范，主要是为了编程的简便
+**不规范说明：此处的on_mouse1加添了全局变量，没有像前面那样规范，主要是为了编程的简便
 **********************************************************************/
 Mat org;
 int n=0;
@@ -301,9 +301,18 @@ vector<Point2f> capturePoint;
 void on_mouse1(int event, int x,int y,int flags,void *ustc)
 {
 	Point2f pt;
+	/*Mat crop;
+	Mat cropgray;
+	vector<Point2f> corners;*/
 	//char coordinateName[16];
 	if (event==CV_EVENT_LBUTTONDOWN)
 	{
+		//org(Rect(x - 10, y - 10, 20, 20)).copyTo(crop);
+		//cvtColor(crop, cropgray, CV_RGB2GRAY);
+		////GaussianBlur(cropgray, cropgray, Size(3, 3), 0); // 滤波 
+		//goodFeaturesToTrack(cropgray, corners, 1, 0.01, 1, Mat());
+		//pt = Point2f(corners[0].x + x - 10, corners[0].y + y - 10);
+
 		pt=Point2f(x,y);
 		capturePoint.push_back(pt);
 		n++;

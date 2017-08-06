@@ -175,7 +175,7 @@ font: 12pt &quot;Agency FB&quot;;</string>
 color: rgb(0, 0, 255);</string>
     </property>
     <property name="text">
-     <string>操作指南：</string>
+     <string>参数说明：</string>
     </property>
    </widget>
    <widget class="QLabel" name="display_label">
