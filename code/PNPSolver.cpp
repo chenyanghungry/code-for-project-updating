@@ -92,6 +92,12 @@ int PNPSolver::Solve(METHOD method)
 	double r33 = RoteM.ptr<double>(2)[2];
 	TransM = tvec;
 	
+	
+	r11 = 0.8159;
+	r21 = -0.4897;
+	r31 = -0.3074;
+	r32 = -0.2310;
+	r33 = 0.9231;
 	//计算出相机坐标系的三轴旋转欧拉角，旋转后可以转出世界坐标系。
 	//旋转顺序为z、y、x
 	double thetaz = atan2(r21, r11) / CV_PI * 180;

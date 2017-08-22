@@ -225,7 +225,7 @@ model quad_recog(ntuple_list n_tuple, vector<lineinfo> lines, vector<Point2f>& p
 }
 
 /***************************************************************************
-**函数说明：将LSD检测的线按从小到大排序，而且每条线的两个点也按从大到小排序
+**函数说明：将LSD检测的线按X轴的从大到小排序，而且每条线的两个点也按从大到小排序
 ****************************************************************************/
 void sortline(ntuple_list ntl)
 {
@@ -519,6 +519,30 @@ void procfunc(string path,string showpath, string& resultshow, Point2f pts, vect
 	mergeline(ntl, n_tuple_merge);
 	free_ntuple_list(ntl);
 
+	/*for (size_t i = 0; i < n_tuple_merge->size; i++)
+	{
+		cout << n_tuple_merge->values[0 + i * n_tuple_merge->dim] << "\t";
+		cout << n_tuple_merge->values[1 + i * n_tuple_merge->dim] << "\t";
+		cout << n_tuple_merge->values[2 + i * n_tuple_merge->dim] << "\t";
+		cout << n_tuple_merge->values[3 + i * n_tuple_merge->dim] << "\t";
+		cout << endl;
+	}
+
+	Point pt111, pt121;
+	for (int j = 0; j != n_tuple_merge->size; ++j)
+	{
+		pt111.x = int(n_tuple_merge->values[0 + j * n_tuple_merge->dim]);
+		pt111.y = int(n_tuple_merge->values[1 + j * n_tuple_merge->dim]);
+		pt121.x = int(n_tuple_merge->values[2 + j * n_tuple_merge->dim]);
+		pt121.y = int(n_tuple_merge->values[3 + j * n_tuple_merge->dim]);
+		int width = 2;
+		cv::line(temp, pt111, pt121, cv::Scalar(1), width, CV_AA);
+	}
+	cv::namedWindow("src", CV_WINDOW_AUTOSIZE);
+	cv::imshow("src", temp);
+	imwrite("..\\temp1.png", temp);
+	cv::waitKey(0);
+	cv::destroyAllWindows();*/
 	vector<pair<vector<Point2f>, model>> pixels;
 	find_quad(n_tuple_merge, src, pixels);
 	free_ntuple_list(n_tuple_merge);
@@ -531,7 +555,7 @@ void procfunc(string path,string showpath, string& resultshow, Point2f pts, vect
 	double u0 = 499.9127;
 	double v0 = 508.6514;
 	//镜头畸变参数
-	double k1 = -0.1746   ;
+	double k1 = -0.1746;
 	double k2 = 0.1028;
 	double p1 = 0;
 	double p2 = 0;

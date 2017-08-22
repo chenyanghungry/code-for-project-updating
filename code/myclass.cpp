@@ -294,6 +294,8 @@ void MyClass::savetext()
 
 /*********************************************************************
 **不规范说明：此处的on_mouse1加添了全局变量，没有像前面那样规范，主要是为了编程的简便
+**
+**该处尝试过先点取，再在周围寻找角点，结果使得结果的旋转角度出现较大的偏差
 **********************************************************************/
 Mat org;
 int n=0;
@@ -301,17 +303,17 @@ vector<Point2f> capturePoint;
 void on_mouse1(int event, int x,int y,int flags,void *ustc)
 {
 	Point2f pt;
-	/*Mat crop;
+	Mat crop;
 	Mat cropgray;
-	vector<Point2f> corners;*/
+	vector<Point2f> corners;
 	//char coordinateName[16];
 	if (event==CV_EVENT_LBUTTONDOWN)
 	{
-		//org(Rect(x - 10, y - 10, 20, 20)).copyTo(crop);
-		//cvtColor(crop, cropgray, CV_RGB2GRAY);
-		////GaussianBlur(cropgray, cropgray, Size(3, 3), 0); // 滤波 
-		//goodFeaturesToTrack(cropgray, corners, 1, 0.01, 1, Mat());
-		//pt = Point2f(corners[0].x + x - 10, corners[0].y + y - 10);
+		org(Rect(x - 10, y - 10, 20, 20)).copyTo(crop);
+		cvtColor(crop, cropgray, CV_RGB2GRAY);
+		//GaussianBlur(cropgray, cropgray, Size(3, 3), 0); // 滤波 
+		goodFeaturesToTrack(cropgray, corners, 1, 0.01, 1, Mat());
+		pt = Point2f(corners[0].x + x - 10, corners[0].y + y - 10);
 
 		pt=Point2f(x,y);
 		capturePoint.push_back(pt);
@@ -340,10 +342,10 @@ void MyClass::pointimage()
 	else
 	{
 		org=imread(path,1);
-		namedWindow("org",CV_WINDOW_NORMAL);
+		namedWindow("org");
 		setMouseCallback("org",on_mouse1,0);
 		imshow("org",org);
-		waitKey(0);
+		waitKey(0);//这条语句很重要，原因不明
 		if (n>=4)
 		{
 			n=0;
