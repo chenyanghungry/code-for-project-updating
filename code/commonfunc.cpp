@@ -499,9 +499,9 @@ void find_quad(ntuple_list n_tuple_merge, cv::Mat temp,vector<pair<vector<Point2
 			pts：图片的起始点坐标，为了与截图功能区别
 			results：保存需要在QT上显示的数据
 **************************************************************************/
-void procfunc(string path,string showpath, string& resultshow, Point2f pts, vector<vector<string>>& results)
+void procfunc(string path,string showpath, Point2f pts, vector<vector<string>>& results)
 {
-	resultshow = "位置显示：\n\n";
+	
 	vector<string> result;
 	Mat src = imread(path, CV_LOAD_IMAGE_COLOR);
 	Mat temp, src_gray;
@@ -547,19 +547,28 @@ void procfunc(string path,string showpath, string& resultshow, Point2f pts, vect
 	find_quad(n_tuple_merge, src, pixels);
 	free_ntuple_list(n_tuple_merge);
 
+	//定义手眼矩阵
+	double m[4][4] = { { 0.9998, -0.0047, -0.0192, 2.5602 }, { 0.0046, 1, -0.0029, -117.9984 }, { 0.0192, 0.0028, 0.9998, 221.0612 }, {0,0,0,1} };
+	cv::Mat hand_eye_M = cv::Mat(4, 4, CV_64FC1, m);
+	//计算基座与末端矩阵
+	string path_base = "end_to_base.txt";
+	vector<double> end_to_base_vec = readData(path_base);
+	cv::Mat end_to_base_matrix(4, 4, CV_64FC1);
+	vec2matrix(end_to_base_vec, end_to_base_matrix);
+
 	//PNP
 	/*************相机物理参数***********/
 	//内参数
-	double fx = 1501.3345;
-	double fy = 1500.9675;
-	double u0 = 499.9127;
-	double v0 = 508.6514;
+	double fx = 1486.322;
+	double fy = 1486.382;
+	double u0 = 500.5557;
+	double v0 = 513.8089;
 	//镜头畸变参数
-	double k1 = -0.1746;
-	double k2 = 0.1028;
+	double k1 = -0.1714;
+	double k2 = 0.1514;
 	double p1 = 0;
 	double p2 = 0;
-	double k3 = 0.1379;
+	double k3 = -0.2312;
 
 	vector<Point3f> Point3D;
 	PNPSolver p4psolver;
@@ -583,7 +592,6 @@ void procfunc(string path,string showpath, string& resultshow, Point2f pts, vect
 		switch (pixels[i].second)
 		{
 		case SQUARE:
-			resultshow += "SQUARE:\n\t";
 			result.push_back("SQUARE:");
 			p4psolver.Points3D.push_back(Point3f(5, -5, 0));
 			p4psolver.Points3D.push_back(Point3f(5, 5, 0));
@@ -591,7 +599,6 @@ void procfunc(string path,string showpath, string& resultshow, Point2f pts, vect
 			p4psolver.Points3D.push_back(Point3f(-5, -5, 0));
 			break;
 		case TRAPEZOID:
-			resultshow += "TRAPEZOID:\n\t";
 			result.push_back("TRAPEZOID:");
 			p4psolver.Points3D.push_back(Point3f(5, -5, 0));
 			p4psolver.Points3D.push_back(Point3f(11, 5, 0));
@@ -599,7 +606,6 @@ void procfunc(string path,string showpath, string& resultshow, Point2f pts, vect
 			p4psolver.Points3D.push_back(Point3f(-5, -5, 0));
 			break;
 		case RECTANGLE:
-			resultshow += "RECTANGLE:\n\t";
 			result.push_back("RECTANGLE:");
 			p4psolver.Points3D.push_back(Point3f(-5, -15, 0));
 			p4psolver.Points3D.push_back(Point3f(5, -15, 0));
@@ -655,19 +661,20 @@ void procfunc(string path,string showpath, string& resultshow, Point2f pts, vect
 		}
 		if (p4psolver.Solve(PNPSolver::METHOD::CV_ITERATIVE) == 0)
 		{
-			resultshow += d2s(p4psolver.Position_OwInC.x);
-			resultshow += "\t";
-			resultshow += d2s(p4psolver.Position_OwInC.y);
-			resultshow += "\t";
-			resultshow += d2s(p4psolver.Position_OwInC.z);
-			resultshow += "\n";
-			
-			result.push_back(d2s(p4psolver.Position_OwInC.x));
+			//手眼和机械臂读数都已求出，此处将三个矩阵相乘，得到的就是目标原点到机械臂基座的矩阵
+			vector <double> pose=threeM2pose(end_to_base_matrix,hand_eye_M,p4psolver.RTM);
+			result.push_back(d2s(pose[0]));
+			result.push_back(d2s(pose[1]));
+			result.push_back(d2s(pose[2]));
+			result.push_back(d2s(pose[3]));
+			result.push_back(d2s(pose[4]));
+			result.push_back(d2s(pose[5]));
+			/*result.push_back(d2s(p4psolver.Position_OwInC.x));
 			result.push_back(d2s(p4psolver.Position_OwInC.y));
 			result.push_back(d2s(p4psolver.Position_OwInC.z));
 			result.push_back(d2s(p4psolver.Theta_C2W.x));
 			result.push_back(d2s(p4psolver.Theta_C2W.y));
-			result.push_back(d2s(p4psolver.Theta_C2W.z));
+			result.push_back(d2s(p4psolver.Theta_C2W.z));*/
 			//std::cout << "test2:CV_ITERATIVE方法:	目标相对相机位置→" << "相机平移=" << p4psolver.Position_OwInC << endl;
 		}
 		p4psolver.Points2D.clear();
@@ -676,6 +683,24 @@ void procfunc(string path,string showpath, string& resultshow, Point2f pts, vect
 		result.clear();
 	}
 	imwrite("..\\resultshow.bmp",imageshow);
+}
+
+vector<double> threeM2pose(cv::Mat end2base,cv::Mat handeye, cv::Mat b2c)
+{
+	vector<double> pose;
+	cv::Mat M=end2base*handeye*b2c;
+	pose.push_back(M.at<double>(0,3));
+	pose.push_back(M.at<double>(1,3));
+	pose.push_back(M.at<double>(2,3));
+
+	double thetaz = atan2(M.at<double>(1,0), M.at<double>(0,0)) / CV_PI * 180;
+	double thetay = atan2(-1 * M.at<double>(2,0), sqrt(M.at<double>(2,1)*M.at<double>(2,1) + M.at<double>(2,2)*M.at<double>(2,2))) / CV_PI * 180;
+	double thetax = atan2(M.at<double>(2,1), M.at<double>(2,2)) / CV_PI * 180;
+	pose.push_back(thetax);
+	pose.push_back(thetay);
+	pose.push_back(thetaz);
+	return pose;
+
 }
 
 /****************************************************************************************
@@ -860,16 +885,16 @@ int pointshot(string path, vector<Point2f> points, vector<string> &result)
 	//PNP
 	/*************相机物理参数***********/
 	//内参数
-	double fx = 1501.3345;
-	double fy = 1500.9675;
-	double u0 = 499.9127;
-	double v0 = 508.6514;
+	double fx = 1486.322;
+	double fy = 1486.382;
+	double u0 = 500.5557;
+	double v0 = 513.8089;
 	//镜头畸变参数
-	double k1 = -0.1746;
-	double k2 = 0.1028;
+	double k1 = -0.1714;
+	double k2 = 0.1514;
 	double p1 = 0;
 	double p2 = 0;
-	double k3 = 0.1379;
+	double k3 = -0.2312;
 	
 	
 	PNPSolver p4psolver;

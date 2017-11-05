@@ -32,6 +32,8 @@ public slots:
 	void savepicture();//保存图片
 	void savetext();//保存处理的 结果
 	void pointimage();//点取四边形的四个点
+	void arm_initial();//机械臂初始化
+	void arm_operate();//机械臂执行
 
 private:
 	Ui::MyClass ui;

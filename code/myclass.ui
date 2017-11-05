@@ -63,7 +63,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>110</y>
+      <y>270</y>
       <width>86</width>
       <height>44</height>
      </rect>
@@ -94,7 +94,7 @@ font: 12pt &quot;Agency FB&quot;;</string>
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>150</y>
+      <y>320</y>
       <width>500</width>
       <height>400</height>
      </rect>
@@ -161,190 +161,50 @@ font: 12pt &quot;Agency FB&quot;;</string>
      </property>
     </widget>
    </widget>
-   <widget class="QLabel" name="operate_label">
+   <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>564</y>
-      <width>101</width>
-      <height>41</height>
+      <x>0</x>
+      <y>130</y>
+      <width>500</width>
+      <height>100</height>
      </rect>
     </property>
-    <property name="styleSheet">
-     <string notr="true">font: 75 12pt &quot;AcadEref&quot;;
-color: rgb(0, 0, 255);</string>
+    <property name="title">
+     <string>机械臂</string>
     </property>
-    <property name="text">
-     <string>相机内参：</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>605</y>
-      <width>200</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 14pt ;
-background-color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>fx:    1501.3345</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>630</y>
-      <width>200</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 14pt ;
-background-color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>fy:    1500.9675</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>660</y>
-      <width>200</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 14pt ;
-background-color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>U0:    499.9127</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>690</y>
-      <width>200</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 14pt ;
-background-color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>V0:    508.6514</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="operate_label_2">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>560</y>
-      <width>101</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 75 12pt &quot;AcadEref&quot;;
-color: rgb(0, 0, 255);</string>
-    </property>
-    <property name="text">
-     <string>畸变参数：</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_5">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>630</y>
-      <width>200</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 14pt ;
-background-color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>k2:     0.1028</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_6">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>690</y>
-      <width>200</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 14pt ;
-background-color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>k3:     0.1379</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_7">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>605</y>
-      <width>200</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 14pt ;
-background-color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>k1:    -0.1746</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_8">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>660</y>
-      <width>200</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 14pt ;
-background-color: rgb(255, 255, 255);</string>
-    </property>
-    <property name="text">
-     <string>p1=p2:   0</string>
-    </property>
+    <widget class="QPushButton" name="initializeButton">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>40</y>
+       <width>121</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>机械臂初始化</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="operateButton">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>40</y>
+       <width>101</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>机械臂操作</string>
+     </property>
+    </widget>
    </widget>
    <zorder>groupBoxbutton</zorder>
    <zorder>scrollArea</zorder>
    <zorder>result</zorder>
    <zorder>tableView</zorder>
-   <zorder>operate_label</zorder>
-   <zorder>label</zorder>
-   <zorder>label_2</zorder>
-   <zorder>label_3</zorder>
-   <zorder>label_4</zorder>
-   <zorder>operate_label_2</zorder>
-   <zorder>label_5</zorder>
-   <zorder>label_6</zorder>
-   <zorder>label_7</zorder>
-   <zorder>label_8</zorder>
+   <zorder>groupBox</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

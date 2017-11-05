@@ -77,7 +77,7 @@ void find_quad(ntuple_list n_tuple_merge, cv::Mat temp,vector<pair<vector<Point2
 /*************************************************************************
 **函数说明：QT界面输入路径后的处理函数，与之前的C++程序接入的主要程序
 **************************************************************************/
-void procfunc(string path,string showpath, string& resultshow,Point2f pts,vector<vector<string>>& results);
+void procfunc(string path,string showpath, Point2f pts,vector<vector<string>>& results);
 
 /****************************************************************************************
 **函数说明：鼠标回调函数
@@ -88,3 +88,5 @@ void on_mouse(int event, int x, int y, int flags, void *ustc);
 **函数说明：四点确定四边形位置
 *****************************************************************************************/
 int pointshot(string path, vector<Point2f> points, vector<string> &result);
+
+vector<double> threeM2pose(cv::Mat end2base,cv::Mat handeye, cv::Mat b2c);

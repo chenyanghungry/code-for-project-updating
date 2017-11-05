@@ -12,6 +12,8 @@
 // 原理参见：http://www.cnblogs.com/singlex/category/911880.html
 // Author：VShawn
 // Ver:2016.11.26.0
+//
+//修改：陈洋 2017/10/29
 PNPSolver::PNPSolver()
 {
 	//初始化输出矩阵
@@ -76,6 +78,11 @@ int PNPSolver::Solve(METHOD method)
 	//solvePnP(Points3D, Points2D, camera_matrix, distortion_coefficients, rvec, tvec, false, CV_P3P);		//Gao的方法可以使用任意四个特征点
 	//solvePnP(Points3D, Points2D, camera_matrix, distortion_coefficients, rvec, tvec, false, CV_EPNP);
 
+	/**********************************************
+	**此处一定要注意，solvePnp官网上说求出的rvec和tvec是将模型坐标系中的点坐标转到相机坐标系中，这句是没有错的。
+	**但rvec和tvec组成的旋转平移矩阵是将相机坐标系转化为模型坐标系，对于两个坐标系中的点，却是将模型坐标系
+	**中的点坐标转变为在相机坐标系中的点坐标
+	***********************************************/
 
 	/*******************提取旋转矩阵*********************/
 	double rm[9];
@@ -93,11 +100,11 @@ int PNPSolver::Solve(METHOD method)
 	TransM = tvec;
 	
 	
-	r11 = 0.8159;
+	/*r11 = 0.8159;
 	r21 = -0.4897;
 	r31 = -0.3074;
 	r32 = -0.2310;
-	r33 = 0.9231;
+	r33 = 0.9231;*/
 	//计算出相机坐标系的三轴旋转欧拉角，旋转后可以转出世界坐标系。
 	//旋转顺序为z、y、x
 	double thetaz = atan2(r21, r11) / CV_PI * 180;
@@ -149,9 +156,27 @@ int PNPSolver::Solve(METHOD method)
 	Position_OcInW.y = y*-1;
 	Position_OcInW.z = z*-1;
 
+	RTM = cv::Mat(4, 4, CV_64FC1, cv::Scalar::all(0));
+	RTM.at<double>(0, 0) = r11;
+	RTM.at<double>(0, 1) = r12; 
+	RTM.at<double>(0, 2) = r13; 
+	RTM.at<double>(0, 3) = tx; 
+	RTM.at<double>(1, 0) = r21; 
+	RTM.at<double>(1, 1) = r22;
+	RTM.at<double>(1, 2) = r23;
+	RTM.at<double>(1, 3) = ty;
+	RTM.at<double>(2, 0) = r31;
+	RTM.at<double>(2, 1) = r32;
+	RTM.at<double>(2, 2) = r33;
+	RTM.at<double>(2, 3) = tz;
+	RTM.at<double>(3, 0) = 0;
+	RTM.at<double>(3, 1) = 0;
+	RTM.at<double>(3, 2) = 0;
+	RTM.at<double>(3, 3) = 1;
+	
 	//保存目标相对相机的旋转平移矩阵，用于测试
 	/*char* one = "w2c.txt";
-	ofstream ofn(one);
+	ofstream ofn(one,ios_base::app);
 	ofn << r11 << "\t" << r12 << "\t" << r13 << "\t" << tx << "\t\n";
 	ofn << r21 << "\t" << r22 << "\t" << r23 << "\t" << ty << "\t\n";
 	ofn << r31 << "\t" << r32 << "\t" << r33 << "\t" << tz << "\t\n";

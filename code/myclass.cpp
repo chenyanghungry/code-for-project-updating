@@ -19,7 +19,9 @@ MyClass::MyClass(QWidget *parent)
 	connect(ui.actionPicture,SIGNAL(triggered()),this,SLOT(savepicture()));
 	connect(ui.actiontext,SIGNAL(triggered()),this,SLOT(savetext()));
 	connect(ui.pointButton,SIGNAL(clicked()),this,SLOT(pointimage()));
-
+	//机械臂操作
+	connect(ui.initializeButton, SIGNAL(clicked()), this, SLOT(arm_initial()));
+	connect(ui.operateButton,SIGNAL(clicked()),this,SLOT(arm_operate()));
 
 	//tableview显示结果窗口设置
 	model = new QStandardItemModel(ui.tableView);
@@ -36,6 +38,8 @@ MyClass::MyClass(QWidget *parent)
 	ui.tableView->setColumnWidth(1, 120);
 	ui.tableView->setColumnWidth(2, 120);
 	ui.tableView->setColumnWidth(3, 120);
+
+
 	
 }
 
@@ -51,13 +55,10 @@ void MyClass::start()
 	string resultshow;
 	Point2f pts = Point2f(0,0);
 	vector<vector<string>> results;
-	procfunc(imagepath,imagepath, resultshow,pts,results);
-	/*QString resultshowQ = s2q(resultshow);
-	ui.resulttextEdit->setText(resultshowQ);*/
+	procfunc(imagepath,imagepath,pts,results);
 	Mat temp = imread("..\\resultshow.bmp");
 	Mat temp1;
 	cvtColor(temp, temp1, CV_BGR2RGB);
-	//cvtColor(temp, test3, CV_GRAY2RGB);
 	QImage showImageQ = QImage((const unsigned char*)(temp1.data), temp1.cols, temp1.rows, QImage::Format_RGB888);
 	this->ui.imagelabel->setPixmap(QPixmap::fromImage(showImageQ));
 	if (model->rowCount()==0)
@@ -104,9 +105,8 @@ void MyClass::open()
 		string resultshow;
 		Point2f pts = Point2f(0,0);
 		vector<vector<string>> results;
-		procfunc(imagepath,imagepath, resultshow,pts,results);
-		/*QString resultshowQ = s2q(resultshow);
-		ui.resulttextEdit->setText(resultshowQ);*/
+		procfunc(imagepath,imagepath,pts,results);
+	
 		Mat temp = imread("..\\resultshow.bmp");
 		Mat temp1;
 		cvtColor(temp, temp1, CV_BGR2RGB);
@@ -180,7 +180,7 @@ void MyClass::shotimage()
 		{
 			pt1.x = (*pt).x;
 			pt1.y = (*pt).y;
-			procfunc("..\\shot.bmp",path, resultshow, pt1,results);
+			procfunc("..\\shot.bmp",path, pt1,results);
 			/*QString resultshowQ = s2q(resultshow);
 			ui.resulttextEdit->setText(resultshowQ);*/
 			Mat temp = imread("..\\resultshow.bmp",CV_LOAD_IMAGE_COLOR);
@@ -292,6 +292,15 @@ void MyClass::savetext()
 	ofn.close();
 }
 
+void MyClass::arm_initial()
+{
+
+}
+
+void MyClass::arm_operate()
+{
+
+}
 /*********************************************************************
 **不规范说明：此处的on_mouse1加添了全局变量，没有像前面那样规范，主要是为了编程的简便
 **

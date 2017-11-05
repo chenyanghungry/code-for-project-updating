@@ -18,6 +18,9 @@ using namespace std;
 // 原理参见：http://www.cnblogs.com/singlex/category/911880.html
 // Author：VShawn
 // Ver:2016.11.25.0
+//
+//修改：陈洋 2017/10/29
+
 class PNPSolver
 {
 public:
@@ -40,7 +43,10 @@ public:
 	/***********************位姿估计结果**************************/
 	//最后求出的旋转矩阵与平移矩阵
 	cv::Mat RoteM, TransM;
-	
+
+	//存储最后求出的标定板到相机的矩阵
+	cv::Mat RTM;
+
 	//世界系到相机系的三轴旋转欧拉角，世界系照此旋转后可以与相机坐标系完全平行。
 	//旋转顺序为x、y、z
 	cv::Point3f Theta_W2C;
@@ -107,15 +113,6 @@ public:
 		distortion_coefficients.ptr<double>(3)[0] = p_2;
 		distortion_coefficients.ptr<double>(4)[0] = k_3;
 	}
-
-
-
-
-
-
-
-
-
 
 
 
