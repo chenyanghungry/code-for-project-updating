@@ -748,6 +748,7 @@ void on_mouse(int event, int x, int y, int flags, void *ustc)//event鼠标事件代号
 		int height = abs(pre_pt.y - cur_pt.y);
 
 		dst = org(Rect(min(cur_pt.x, pre_pt.x), min(cur_pt.y, pre_pt.y), width, height));
+		//记录截图的起始点，为后面恢复图片在实际图片中保存数据，z主要是为了判别是否做了截取
 		(*pt).x = min(cur_pt.x, pre_pt.x);
 		(*pt).y = min(cur_pt.y, pre_pt.y);
 		(*pt).z = 0.1;
@@ -764,7 +765,6 @@ int pointshot(string path, vector<Point2f> points, vector<string> &result)
 	lineinfo line1, line2, line3, line4;//定义四条线段，以下来判断它们分别属于什么形状
 	model model_num=NO;
 	#pragma region 构造四条线
-
 	line1.x1=points[0].x;
 	line1.y1=points[0].y;
 	line1.x2=points[1].x;
@@ -796,7 +796,6 @@ int pointshot(string path, vector<Point2f> points, vector<string> &result)
 	line4.k = (line4.y1 - line4.y2) / (line4.x1 - line4.x2);
 	line4.b = line4.y1 - line4.k*line4.x1;
 	line4.dist = sqrt((line4.y1 - line4.y2)*(line4.y1 - line4.y2) + (line4.x1 - line4.x2)*(line4.x1 - line4.x2));
-
 	#pragma endregion
 
 	if ((atan(abs(line1.k-line2.k)/(1+line1.k*line2.k))<0.349)&&(atan(abs(line3.k-line4.k)/(1+line3.k*line4.k))<0.349))//20度
@@ -873,7 +872,6 @@ int pointshot(string path, vector<Point2f> points, vector<string> &result)
 	}
 
 	//定义手眼矩阵
-	//double m[4][4] = { { 0.9998, -0.0047, -0.0192, 2.5602 }, { 0.0046, 1, -0.0029, -117.9984 }, { 0.0192, 0.0028, 0.9998, 221.0612 }, {0,0,0,1} };
 	cv::Mat hand_eye_M = cv::Mat(4, 4, CV_64FC1);
 	string handtoeyepath = "hand_to_eye.txt";
 	vector<double> hand_to_eye_vec = readData(handtoeyepath);
@@ -957,12 +955,11 @@ int pointshot(string path, vector<Point2f> points, vector<string> &result)
 		result.push_back(d2s(pose[3]));
 		result.push_back(d2s(pose[4]));
 		result.push_back(d2s(pose[5]));
-		
 	}
 	p4psolver.Points2D.clear();
 	p4psolver.Points3D.clear();
 	imwrite("..\\resultshow.bmp", imageshow);
-	
+	return 1;
 }
 
 
