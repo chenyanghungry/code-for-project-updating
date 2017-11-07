@@ -220,6 +220,7 @@ font: 12pt &quot;Agency FB&quot;;</string>
      <string>文件</string>
     </property>
     <addaction name="actionOpen"/>
+    <addaction name="actionInitial"/>
     <addaction name="actionClose"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -276,6 +277,11 @@ font: 12pt &quot;Agency FB&quot;;</string>
   <action name="actiontext">
    <property name="text">
     <string>结果</string>
+   </property>
+  </action>
+  <action name="actionInitial">
+   <property name="text">
+    <string>初始化</string>
    </property>
   </action>
  </widget>

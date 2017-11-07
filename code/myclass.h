@@ -3,6 +3,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include "ui_myclass.h"
+#include "parameter_initial.h"
 #include<qstandarditemmodel.h>
 
 #include<opencv2\core\core.hpp>
@@ -20,7 +21,7 @@ public:
 	~MyClass();
 	QString pathQ;//保存正在处理图片的路径
 	QStandardItemModel *model;//tableview的显示模型
-
+	parameter_initial * parameterExec;
 	
 
 public slots:
@@ -34,9 +35,11 @@ public slots:
 	void pointimage();//点取四边形的四个点
 	void arm_initial();//机械臂初始化
 	void arm_operate();//机械臂执行
+	void parameterInitial();//数据初始化
 
 private:
 	Ui::MyClass ui;
+	
 	
 };
 

@@ -89,4 +89,7 @@ void on_mouse(int event, int x, int y, int flags, void *ustc);
 *****************************************************************************************/
 int pointshot(string path, vector<Point2f> points, vector<string> &result);
 
-vector<double> threeM2pose(cv::Mat end2base,cv::Mat handeye, cv::Mat b2c);
+/*********************************************************************************************
+**函数说明：根据求出的三个矩阵给出位姿的向量形式并保存结果
+**********************************************************************************************/
+vector<double> threeM2pose(cv::Mat end2base,cv::Mat handeye, cv::Mat b2c,int i);

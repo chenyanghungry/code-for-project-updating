@@ -495,14 +495,12 @@ void find_quad(ntuple_list n_tuple_merge, cv::Mat temp,vector<pair<vector<Point2
 **函数说明：QT界面输入路径后的处理函数，与之前的C++程序接入的主要程序
 **
 **参数说明：path：处理图片的路径
-			resultshow:保存需要显示的文本信息，与results重复，其实可以删除
 			pts：图片的起始点坐标，为了与截图功能区别
 			results：保存需要在QT上显示的数据
 **************************************************************************/
 void procfunc(string path,string showpath, Point2f pts, vector<vector<string>>& results)
 {
-	
-	vector<string> result;
+	vector<string> result;//每个result保存一个物体的位姿，多个物体存入results中
 	Mat src = imread(path, CV_LOAD_IMAGE_COLOR);
 	Mat temp, src_gray;
 	cvtColor(src, temp, CV_RGB2GRAY);
@@ -519,37 +517,22 @@ void procfunc(string path,string showpath, Point2f pts, vector<vector<string>>& 
 	mergeline(ntl, n_tuple_merge);
 	free_ntuple_list(ntl);
 
-	/*for (size_t i = 0; i < n_tuple_merge->size; i++)
-	{
-		cout << n_tuple_merge->values[0 + i * n_tuple_merge->dim] << "\t";
-		cout << n_tuple_merge->values[1 + i * n_tuple_merge->dim] << "\t";
-		cout << n_tuple_merge->values[2 + i * n_tuple_merge->dim] << "\t";
-		cout << n_tuple_merge->values[3 + i * n_tuple_merge->dim] << "\t";
-		cout << endl;
-	}
-
-	Point pt111, pt121;
-	for (int j = 0; j != n_tuple_merge->size; ++j)
-	{
-		pt111.x = int(n_tuple_merge->values[0 + j * n_tuple_merge->dim]);
-		pt111.y = int(n_tuple_merge->values[1 + j * n_tuple_merge->dim]);
-		pt121.x = int(n_tuple_merge->values[2 + j * n_tuple_merge->dim]);
-		pt121.y = int(n_tuple_merge->values[3 + j * n_tuple_merge->dim]);
-		int width = 2;
-		cv::line(temp, pt111, pt121, cv::Scalar(1), width, CV_AA);
-	}
-	cv::namedWindow("src", CV_WINDOW_AUTOSIZE);
-	cv::imshow("src", temp);
-	imwrite("..\\temp1.png", temp);
-	cv::waitKey(0);
-	cv::destroyAllWindows();*/
 	vector<pair<vector<Point2f>, model>> pixels;
 	find_quad(n_tuple_merge, src, pixels);
 	free_ntuple_list(n_tuple_merge);
 
 	//定义手眼矩阵
-	double m[4][4] = { { 0.9998, -0.0047, -0.0192, 2.5602 }, { 0.0046, 1, -0.0029, -117.9984 }, { 0.0192, 0.0028, 0.9998, 221.0612 }, {0,0,0,1} };
-	cv::Mat hand_eye_M = cv::Mat(4, 4, CV_64FC1, m);
+	//double m[4][4] = { { 0.9998, -0.0047, -0.0192, 2.5602 }, { 0.0046, 1, -0.0029, -117.9984 }, { 0.0192, 0.0028, 0.9998, 221.0612 }, {0,0,0,1} };
+	cv::Mat hand_eye_M = cv::Mat(4, 4, CV_64FC1);
+	string handtoeyepath = "hand_to_eye.txt";
+	vector<double> hand_to_eye_vec = readData(handtoeyepath);
+	for (int i = 0; i < 4;i++)
+	{
+		for (int j = 0; j < 4;j++)
+		{
+			hand_eye_M.at<double>(i, j) = hand_to_eye_vec[i*4+j];
+		}
+	}
 	//计算基座与末端矩阵
 	string path_base = "end_to_base.txt";
 	vector<double> end_to_base_vec = readData(path_base);
@@ -558,17 +541,19 @@ void procfunc(string path,string showpath, Point2f pts, vector<vector<string>>& 
 
 	//PNP
 	/*************相机物理参数***********/
+	string intrinsicPath = "intrinsicM.txt";
+	vector<double> intrinsicV = readData(intrinsicPath);
 	//内参数
-	double fx = 1486.322;
-	double fy = 1486.382;
-	double u0 = 500.5557;
-	double v0 = 513.8089;
+	double fx = intrinsicV[0];
+	double fy = intrinsicV[1];
+	double u0 = intrinsicV[2];
+	double v0 = intrinsicV[3];
 	//镜头畸变参数
-	double k1 = -0.1714;
-	double k2 = 0.1514;
-	double p1 = 0;
-	double p2 = 0;
-	double k3 = -0.2312;
+	double k1 = intrinsicV[4];
+	double k2 = intrinsicV[5];
+	double p1 = intrinsicV[6];
+	double p2 = intrinsicV[7];
+	double k3 = intrinsicV[8];
 
 	vector<Point3f> Point3D;
 	PNPSolver p4psolver;
@@ -661,21 +646,13 @@ void procfunc(string path,string showpath, Point2f pts, vector<vector<string>>& 
 		}
 		if (p4psolver.Solve(PNPSolver::METHOD::CV_ITERATIVE) == 0)
 		{
-			//手眼和机械臂读数都已求出，此处将三个矩阵相乘，得到的就是目标原点到机械臂基座的矩阵
-			vector <double> pose=threeM2pose(end_to_base_matrix,hand_eye_M,p4psolver.RTM);
+			vector <double> pose=threeM2pose(end_to_base_matrix,hand_eye_M,p4psolver.RTM,i+1);
 			result.push_back(d2s(pose[0]));
 			result.push_back(d2s(pose[1]));
 			result.push_back(d2s(pose[2]));
 			result.push_back(d2s(pose[3]));
 			result.push_back(d2s(pose[4]));
 			result.push_back(d2s(pose[5]));
-			/*result.push_back(d2s(p4psolver.Position_OwInC.x));
-			result.push_back(d2s(p4psolver.Position_OwInC.y));
-			result.push_back(d2s(p4psolver.Position_OwInC.z));
-			result.push_back(d2s(p4psolver.Theta_C2W.x));
-			result.push_back(d2s(p4psolver.Theta_C2W.y));
-			result.push_back(d2s(p4psolver.Theta_C2W.z));*/
-			//std::cout << "test2:CV_ITERATIVE方法:	目标相对相机位置→" << "相机平移=" << p4psolver.Position_OwInC << endl;
 		}
 		p4psolver.Points2D.clear();
 		p4psolver.Points3D.clear();
@@ -685,9 +662,13 @@ void procfunc(string path,string showpath, Point2f pts, vector<vector<string>>& 
 	imwrite("..\\resultshow.bmp",imageshow);
 }
 
-vector<double> threeM2pose(cv::Mat end2base,cv::Mat handeye, cv::Mat b2c)
+vector<double> threeM2pose(cv::Mat end2base,cv::Mat handeye, cv::Mat b2c,int i)
 {
 	vector<double> pose;
+	string filename1 = "matrix" + d2s((double)i)+".txt";
+	const char* fileM = filename1.c_str();
+	string filename2 = "vector" + d2s((double)i) + ".txt";
+	const char* fileV = filename2.c_str();
 	cv::Mat M=end2base*handeye*b2c;
 	pose.push_back(M.at<double>(0,3));
 	pose.push_back(M.at<double>(1,3));
@@ -699,6 +680,15 @@ vector<double> threeM2pose(cv::Mat end2base,cv::Mat handeye, cv::Mat b2c)
 	pose.push_back(thetax);
 	pose.push_back(thetay);
 	pose.push_back(thetaz);
+	ofstream ofn(fileM);
+	ofn << M.at<double>(0, 0) << "\t" << M.at<double>(0, 1) << "\t" << M.at<double>(0, 2) << "\t" << M.at<double>(0, 3) << "\t\n";
+	ofn << M.at<double>(1, 0) << "\t" << M.at<double>(1, 1) << "\t" << M.at<double>(1, 2) << "\t" << M.at<double>(1, 3) << "\t\n";
+	ofn << M.at<double>(2, 0) << "\t" << M.at<double>(2, 1) << "\t" << M.at<double>(2, 2) << "\t" << M.at<double>(2, 3) << "\t\n";
+	ofn << 0 << "\t" << 0 << "\t" << 0 << "\t" << 1 << "\t\n";
+	ofn.close();
+	ofstream ofnv(fileV);
+	ofnv << M.at<double>(0, 3) << "\t" << M.at<double>(1, 3) << "\t" << M.at<double>(2, 3) << "\t" << thetax << "\t" << thetay << "\t" << thetaz;
+	ofnv.close();
 	return pose;
 
 }
@@ -773,7 +763,7 @@ int pointshot(string path, vector<Point2f> points, vector<string> &result)
 {
 	lineinfo line1, line2, line3, line4;//定义四条线段，以下来判断它们分别属于什么形状
 	model model_num=NO;
-#pragma region 构造四条线
+	#pragma region 构造四条线
 
 	line1.x1=points[0].x;
 	line1.y1=points[0].y;
@@ -807,7 +797,7 @@ int pointshot(string path, vector<Point2f> points, vector<string> &result)
 	line4.b = line4.y1 - line4.k*line4.x1;
 	line4.dist = sqrt((line4.y1 - line4.y2)*(line4.y1 - line4.y2) + (line4.x1 - line4.x2)*(line4.x1 - line4.x2));
 
-#pragma endregion
+	#pragma endregion
 
 	if ((atan(abs(line1.k-line2.k)/(1+line1.k*line2.k))<0.349)&&(atan(abs(line3.k-line4.k)/(1+line3.k*line4.k))<0.349))//20度
 	{
@@ -882,20 +872,39 @@ int pointshot(string path, vector<Point2f> points, vector<string> &result)
 		}
 	}
 
+	//定义手眼矩阵
+	//double m[4][4] = { { 0.9998, -0.0047, -0.0192, 2.5602 }, { 0.0046, 1, -0.0029, -117.9984 }, { 0.0192, 0.0028, 0.9998, 221.0612 }, {0,0,0,1} };
+	cv::Mat hand_eye_M = cv::Mat(4, 4, CV_64FC1);
+	string handtoeyepath = "hand_to_eye.txt";
+	vector<double> hand_to_eye_vec = readData(handtoeyepath);
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			hand_eye_M.at<double>(i, j) = hand_to_eye_vec[i * 4 + j];
+		}
+	}
+	//计算基座与末端矩阵
+	string path_base = "end_to_base.txt";
+	vector<double> end_to_base_vec = readData(path_base);
+	cv::Mat end_to_base_matrix(4, 4, CV_64FC1);
+	vec2matrix(end_to_base_vec, end_to_base_matrix);
+
 	//PNP
 	/*************相机物理参数***********/
+	string intrinsicPath = "intrinsicM.txt";
+	vector<double> intrinsicV = readData(intrinsicPath);
 	//内参数
-	double fx = 1486.322;
-	double fy = 1486.382;
-	double u0 = 500.5557;
-	double v0 = 513.8089;
+	double fx = intrinsicV[0];
+	double fy = intrinsicV[1];
+	double u0 = intrinsicV[2];
+	double v0 = intrinsicV[3];
 	//镜头畸变参数
-	double k1 = -0.1714;
-	double k2 = 0.1514;
-	double p1 = 0;
-	double p2 = 0;
-	double k3 = -0.2312;
-	
+	double k1 = intrinsicV[4];
+	double k2 = intrinsicV[5];
+	double p1 = intrinsicV[6];
+	double p2 = intrinsicV[7];
+	double k3 = intrinsicV[8];
 	
 	PNPSolver p4psolver;
 	//初始化相机参数
@@ -941,13 +950,14 @@ int pointshot(string path, vector<Point2f> points, vector<string> &result)
 	cv::line(imageshow, new_points[3], new_points[0], cv::Scalar(0, 255, 255), 3, CV_AA);
 	if (p4psolver.Solve(PNPSolver::METHOD::CV_ITERATIVE)==0)
 	{
-		result.push_back(d2s(p4psolver.Position_OwInC.x));
-		result.push_back(d2s(p4psolver.Position_OwInC.y));
-		result.push_back(d2s(p4psolver.Position_OwInC.z));
-		result.push_back(d2s(p4psolver.Theta_C2W.x));
-		result.push_back(d2s(p4psolver.Theta_C2W.y));
-		result.push_back(d2s(p4psolver.Theta_C2W.z));
-		//std::cout << "test2:CV_ITERATIVE方法:	目标相对相机位置→" << "相机平移=" << p4psolver.Position_OwInC << endl;
+		vector <double> pose = threeM2pose(end_to_base_matrix, hand_eye_M, p4psolver.RTM,1);
+		result.push_back(d2s(pose[0]));
+		result.push_back(d2s(pose[1]));
+		result.push_back(d2s(pose[2]));
+		result.push_back(d2s(pose[3]));
+		result.push_back(d2s(pose[4]));
+		result.push_back(d2s(pose[5]));
+		
 	}
 	p4psolver.Points2D.clear();
 	p4psolver.Points3D.clear();

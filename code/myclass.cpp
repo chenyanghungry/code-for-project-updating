@@ -11,6 +11,8 @@ MyClass::MyClass(QWidget *parent)
 	: QMainWindow(parent)
 {
 	ui.setupUi(this); 
+	parameterExec = new parameter_initial();
+	
 	connect(ui.actionOpen, SIGNAL(triggered()), this, SLOT(open()));
 	connect(ui.beginButton, SIGNAL(clicked()), this, SLOT(start()));
 	connect(ui.shotButton, SIGNAL(clicked()), this, SLOT(shotimage()));
@@ -19,6 +21,7 @@ MyClass::MyClass(QWidget *parent)
 	connect(ui.actionPicture,SIGNAL(triggered()),this,SLOT(savepicture()));
 	connect(ui.actiontext,SIGNAL(triggered()),this,SLOT(savetext()));
 	connect(ui.pointButton,SIGNAL(clicked()),this,SLOT(pointimage()));
+	connect(ui.actionInitial, SIGNAL(triggered()), this, SLOT(parameterInitial()));
 	//机械臂操作
 	connect(ui.initializeButton, SIGNAL(clicked()), this, SLOT(arm_initial()));
 	connect(ui.operateButton,SIGNAL(clicked()),this,SLOT(arm_operate()));
@@ -38,7 +41,6 @@ MyClass::MyClass(QWidget *parent)
 	ui.tableView->setColumnWidth(1, 120);
 	ui.tableView->setColumnWidth(2, 120);
 	ui.tableView->setColumnWidth(3, 120);
-
 
 	
 }
@@ -300,6 +302,11 @@ void MyClass::arm_initial()
 void MyClass::arm_operate()
 {
 
+}
+
+void MyClass::parameterInitial()
+{
+	parameterExec->show();
 }
 /*********************************************************************
 **不规范说明：此处的on_mouse1加添了全局变量，没有像前面那样规范，主要是为了编程的简便
