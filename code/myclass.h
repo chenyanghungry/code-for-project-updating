@@ -21,11 +21,11 @@ public:
 	~MyClass();
 	QString pathQ;//保存正在处理图片的路径
 	QStandardItemModel *model;//tableview的显示模型
-	parameter_initial * parameterExec;
+	parameter_initial * parameterExec;//初始化相机参数
 	
 
 public slots:
-	void start();//读取指定路径的图片
+	void start();//读取指定路径的图片并检测
 	void shotimage();//截图函数
 	void open();//选择文件并检测
 	void close();//关闭窗口

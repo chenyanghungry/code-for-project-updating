@@ -7,10 +7,10 @@
 #include <math.h>
 using namespace std;
 
-//QString转化为string
+//string转化为QString
 QString s2q(const string &s);
 
-//string转化为QString
+//QString转化为string
 string q2s(const QString &s);
 
 //double转化为string

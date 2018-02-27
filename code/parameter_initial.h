@@ -13,10 +13,10 @@ public:
 	~parameter_initial();
 
 private:
-	void initial();
+	void initial();//程序开始，需要初始化相机内参矩阵和手眼标定矩阵
 
 private slots:
-	void completeinitial();
+	void completeinitial();//可修改初始化参数
 
 private:
 	Ui::parameter_initial ui;

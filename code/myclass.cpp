@@ -12,7 +12,7 @@ MyClass::MyClass(QWidget *parent)
 {
 	ui.setupUi(this); 
 	parameterExec = new parameter_initial();
-	
+	//功能函数
 	connect(ui.actionOpen, SIGNAL(triggered()), this, SLOT(open()));
 	connect(ui.beginButton, SIGNAL(clicked()), this, SLOT(start()));
 	connect(ui.shotButton, SIGNAL(clicked()), this, SLOT(shotimage()));
@@ -41,8 +41,6 @@ MyClass::MyClass(QWidget *parent)
 	ui.tableView->setColumnWidth(1, 120);
 	ui.tableView->setColumnWidth(2, 120);
 	ui.tableView->setColumnWidth(3, 120);
-
-	
 }
 
 MyClass::~MyClass()
@@ -54,7 +52,7 @@ void MyClass::start()
 {
 	string imagepath="..\\start.bmp";//指定读取路径
 	pathQ=s2q(imagepath);
-	string resultshow;
+	//string resultshow;
 	Point2f pts = Point2f(0,0);//为截取图片增加的
 	vector<vector<string>> results;//保存识别的物体姿态
 	procfunc(imagepath,imagepath,pts,results);
@@ -387,6 +385,5 @@ void MyClass::pointimage()
 			}
 		}
 		capturePoint.clear();
-
 	}
 }

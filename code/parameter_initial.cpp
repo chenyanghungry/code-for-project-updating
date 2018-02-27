@@ -22,20 +22,20 @@ void parameter_initial::completeinitial()
 {
 	string hand2eyePath = "hand_to_eye.txt";
 	string intrinsicMPath = "intrinsicM.txt";
+	//保存手眼标定矩阵
 	ofstream ofn1(hand2eyePath.c_str());
 	ofn1 << q2s(ui.lineEdit_1->text()) << "\t" << q2s(ui.lineEdit_2->text()) << "\t" << q2s(ui.lineEdit_3->text()) << "\t" << q2s(ui.lineEdit_4->text()) << "\t\n"
 		<< q2s(ui.lineEdit_5->text()) << "\t" << q2s(ui.lineEdit_6->text()) << "\t" << q2s(ui.lineEdit_7->text()) << "\t" << q2s(ui.lineEdit_8->text()) << "\t\n"
 		<< q2s(ui.lineEdit_9->text()) << "\t" << q2s(ui.lineEdit_10->text()) << "\t" << q2s(ui.lineEdit_11->text()) << "\t" << q2s(ui.lineEdit_12->text()) << "\t\n"
 		<< q2s(ui.lineEdit_13->text()) << "\t" << q2s(ui.lineEdit_14->text()) << "\t" << q2s(ui.lineEdit_15->text()) << "\t" << q2s(ui.lineEdit_16->text()) << "\t\n";
 	ofn1.close();
-
+	//保存相机内参矩阵
 	ofstream ofn2(intrinsicMPath.c_str());
 	ofn2 << q2s(ui.intrinsicLine1->text()) << "\t" << q2s(ui.intrinsicLine2->text()) << "\t" << q2s(ui.intrinsicLine3->text()) << "\t" << q2s(ui.intrinsicLine4->text()) << "\t"
 		<< q2s(ui.intrinsicLine5->text()) << "\t" << q2s(ui.intrinsicLine6->text()) << "\t" << q2s(ui.intrinsicLine7->text()) << "\t" << q2s(ui.intrinsicLine8->text()) << "\t"
 		<< q2s(ui.intrinsicLine9->text());
 	ofn2.close();
 	this->close();
-
 }
 
 void parameter_initial::initial()
@@ -71,5 +71,4 @@ void parameter_initial::initial()
 	ui.intrinsicLine7->setText(s2q(d2s(intrinsicV[6])));
 	ui.intrinsicLine8->setText(s2q(d2s(intrinsicV[7])));
 	ui.intrinsicLine9->setText(s2q(d2s(intrinsicV[8])));
-
 }

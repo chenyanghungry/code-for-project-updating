@@ -494,7 +494,7 @@ void find_quad(ntuple_list n_tuple_merge, cv::Mat temp,vector<pair<vector<Point2
 /*************************************************************************
 **函数说明：QT界面输入路径后的处理函数，与之前的C++程序接入的主要程序
 **
-**参数说明：path：处理图片的路径
+**参数说明：path：待处理图片的路径 showpath是处理图片路径，很多时候这个是一样的，只是后来加入了截图功能，所以把截图后的图片另存为path了，所以才有了区别
 			pts：图片的起始点坐标，为了与截图功能区别
 			results：保存需要在QT上显示的数据
 **************************************************************************/
@@ -517,13 +517,13 @@ void procfunc(string path,string showpath, Point2f pts, vector<vector<string>>& 
 	mergeline(ntl, n_tuple_merge);
 	free_ntuple_list(ntl);
 
-	vector<pair<vector<Point2f>, model>> pixels;
+	vector<pair<vector<Point2f>, model>> pixels;//保存目标物体以及对应的四个点坐标
 	find_quad(n_tuple_merge, src, pixels);
 	free_ntuple_list(n_tuple_merge);
 
 	//定义手眼矩阵
 	//double m[4][4] = { { 0.9998, -0.0047, -0.0192, 2.5602 }, { 0.0046, 1, -0.0029, -117.9984 }, { 0.0192, 0.0028, 0.9998, 221.0612 }, {0,0,0,1} };
-	cv::Mat hand_eye_M = cv::Mat(4, 4, CV_64FC1);
+	cv::Mat hand_eye_M = cv::Mat(4, 4, CV_64FC1);//手眼标定矩阵
 	string handtoeyepath = "hand_to_eye.txt";
 	vector<double> hand_to_eye_vec = readData(handtoeyepath);
 	for (int i = 0; i < 4;i++)
@@ -535,7 +535,7 @@ void procfunc(string path,string showpath, Point2f pts, vector<vector<string>>& 
 	}
 	//计算基座与末端矩阵
 	string path_base = "end_to_base.txt";
-	vector<double> end_to_base_vec = readData(path_base);
+	vector<double> end_to_base_vec = readData(path_base);//基座与末端矩阵
 	cv::Mat end_to_base_matrix(4, 4, CV_64FC1);
 	vec2matrix(end_to_base_vec, end_to_base_matrix);
 
@@ -562,7 +562,7 @@ void procfunc(string path,string showpath, Point2f pts, vector<vector<string>>& 
 	//设置畸变参数
 	p4psolver.SetDistortionCoefficients(k1, k2, p1, p2, k3);
 	
-	Mat imageshow;
+	Mat imageshow;//保存检测后画线的图片
 	if (pts==Point2f(0,0))
 	{
 		imageshow=imread(path,CV_LOAD_IMAGE_COLOR);
